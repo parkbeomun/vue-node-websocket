@@ -9,7 +9,7 @@
             <md-app-content>
                 <md-field>
                     <label>Message</label>
-                    <md-textarea v-model="textarea" disabled></md-textarea>
+                    <md-textarea v-model="textarea" disabled v-auto-scroll-bottom></md-textarea>
                 </md-field>
                 <md-field>
                     <label>Your Message</label>
@@ -24,17 +24,12 @@
 
 <script>
 
-    import io from 'socket.io-client';
-
-    const socket = io('http://127.0.0.1:3000');
-
 
     export default {
         name: 'HelloWorld',
         created() {
-            socket.on('chat', (data)=> {
+            this.$socket.on('chat', (data)=> {
                 this.textarea += data.message + "\n"
-                this.message = ''
             })
         },
         data() {
@@ -44,24 +39,15 @@
             }
 
         },
-        socket: {
-            connect () {
-                alert('connected to chat server')
-            },
-
-            count(val) {
-                this.count = val.count
-            },
-
-            message (data) {
-                this.textarea += data + '/n'
-            }
-        },
         methods: {
             sendMessage () {
-                socket.emit('chat',{
+
+                this.$socket.emit('chat',{
                     message: this.message
                 });
+
+                this.textarea += this.message + "\n"
+                this.message = ''
             }
         }
     }

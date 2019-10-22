@@ -1,10 +1,8 @@
-
-var express = require('express');
-var path = require('path')
-var app = express()
-
-var server = require('http').createServer(app)
-var io = require('socket.io')(server)
+var app = require('express')();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server,{
+    pingTimeout: 1000,
+});
 
 
 app.all('/*', function(req, res, next) {
@@ -17,7 +15,6 @@ app.all('/*', function(req, res, next) {
 app.get('/', function(req, res) {
     res.sendFile('Hellow Chating App Server');
 });
-
 
 //connection event handler
 io.on('connection' , function(socket) {
@@ -35,7 +32,7 @@ io.on('connection' , function(socket) {
         };
 
         // 클라이언트에게 메시지를 전송한다
-        socket.emit('chat', rtnMessage);
+        socket.broadcast.emit('chat', rtnMessage);
     });
 
 
